@@ -1,0 +1,20 @@
+{
+  "name": "cypress-utils-example",
+  "version": "1.0.0",
+  "description": "Example project demonstrating usage of cypress-utils-framework",
+  "author": "Karmit Lalani",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test": "cypress run",
+    "test:headed": "cypress run --headed"
+  },
+  "dependencies": {
+    "cypress": "^13.6.0",
+    "cypress-utils-framework": "file:../"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.10",
+    "typescript": "^5.2.2"
+  }
+} 
