@@ -267,6 +267,59 @@ cy.circuitBreakerRequest('GET', '/api/unreliable', null, {
 | `scrollToElement(selector)` | Scroll to element | `selector: string` |
 | `takeScreenshot(name?)` | Take screenshot | `name?: string` |
 
+### Enhanced UI Interactions
+
+| Method | Description | Parameters |
+|--------|-------------|------------|
+| `dragTo(fromSelector, toSelector)` | Drag and drop element | `fromSelector: string`, `toSelector: string` |
+| `scrollTo(selector)` | Scroll to element | `selector: string` |
+| `clickAll(selectors)` | Click multiple elements | `selectors: string[]` |
+| `uploadFile(selector, filePath)` | Upload file to input | `selector: string`, `filePath: string` |
+| `focusElement(selector)` | Focus on element | `selector: string` |
+| `blurElement(selector)` | Remove focus from element | `selector: string` |
+| `pressKey(selector, key)` | Press specific key | `selector: string`, `key: string` |
+| `pressKeySequence(selector, keys)` | Press sequence of keys | `selector: string`, `keys: string[]` |
+| `selectAllText(selector)` | Select all text in element | `selector: string` |
+| `selectTextRange(selector, start, end)` | Select text range | `selector: string`, `start: number`, `end: number` |
+| `copyToClipboard(selector)` | Copy text to clipboard | `selector: string` |
+| `pasteFromClipboard(selector)` | Paste from clipboard | `selector: string` |
+| `undoAction(selector)` | Undo last action | `selector: string` |
+| `redoAction(selector)` | Redo last action | `selector: string` |
+| `toggleElement(selector)` | Toggle element state | `selector: string` |
+| `hoverOver(selector)` | Hover over element | `selector: string` |
+| `rightClick(selector)` | Right click on element | `selector: string` |
+| `doubleClick(selector)` | Double click on element | `selector: string` |
+| `typeSlowly(selector, text, delay?)` | Type text with delay | `selector: string`, `text: string`, `delay?: number` |
+| `clearAndType(selector, text)` | Clear and type text | `selector: string`, `text: string` |
+
+### Element State Validation
+
+| Method | Description | Parameters |
+|--------|-------------|------------|
+| `isVisible(selector)` | Check if element is visible | `selector: string` |
+| `isHidden(selector)` | Check if element is hidden | `selector: string` |
+| `isEnabled(selector)` | Check if element is enabled | `selector: string` |
+| `isDisabled(selector)` | Check if element is disabled | `selector: string` |
+| `isChecked(selector)` | Check if checkbox is checked | `selector: string` |
+| `isUnchecked(selector)` | Check if checkbox is unchecked | `selector: string` |
+| `isRequired(selector)` | Check if element is required | `selector: string` |
+| `hasAttribute(selector, attribute, value?)` | Check element attribute | `selector: string`, `attribute: string`, `value?: string` |
+| `hasClass(selector, className)` | Check if element has class | `selector: string`, `className: string` |
+| `hasCSSProperty(selector, property, value)` | Check CSS property | `selector: string`, `property: string`, `value: string` |
+
+### Smart Waiting Utilities
+
+| Method | Description | Parameters |
+|--------|-------------|------------|
+| `waitForText(selector, text, timeout?)` | Wait for specific text | `selector: string`, `text: string`, `timeout?: number` |
+| `waitForNoText(selector, text, timeout?)` | Wait for text to disappear | `selector: string`, `text: string`, `timeout?: number` |
+| `waitForElementCount(selector, count, timeout?)` | Wait for element count | `selector: string`, `count: number`, `timeout?: number` |
+| `waitForEmpty(selector, timeout?)` | Wait for element to be empty | `selector: string`, `timeout?: number` |
+| `waitForNotEmpty(selector, timeout?)` | Wait for element to not be empty | `selector: string`, `timeout?: number` |
+| `waitForReady(selector, timeout?)` | Wait for element to be ready | `selector: string`, `timeout?: number` |
+| `waitForLoading(selector, timeout?)` | Wait for loading to complete | `selector: string`, `timeout?: number` |
+| `waitForPageReady(timeout?)` | Wait for page to be ready | `timeout?: number` |
+
 ### Test Data Utilities
 
 | Method | Description | Parameters |
@@ -395,6 +448,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - 📖 Documentation: [GitHub Wiki](https://github.com/Karmit2196/cypress-utils-framework/wiki)
 
 ## Changelog
+
+### v1.6.0 - Advanced UI Utilities Release 🎯
+- **Advanced Element Interactions**: Focus, blur, keyboard shortcuts, text selection
+- **Enhanced State Validation**: Element enabled/disabled, required, attributes, classes, CSS properties
+- **Smart Waiting Utilities**: Wait for text, element count, empty/not empty states
+- **Clipboard Operations**: Copy, paste, undo, redo actions
+- **Keyboard Shortcuts**: Press keys, key sequences, text range selection
+- **Professional Testing**: 25+ new UI utility methods for comprehensive element testing
 
 ### v1.5.0 - Enhanced Features Release 🚀
 - **Enhanced UI Interactions**: Drag & drop, multiple clicks, file uploads, hover effects

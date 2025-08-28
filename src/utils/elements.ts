@@ -290,4 +290,167 @@ export const rightClick = (selector: string): Chainable<any> => {
  */
 export const doubleClick = (selector: string): Chainable<any> => {
   return cy.get(selector).dblclick();
+};
+
+// Enhanced element interactions
+/**
+ * Focus on an element
+ */
+export const focusElement = (selector: string): Chainable<any> => {
+  return cy.get(selector).focus();
+};
+
+/**
+ * Remove focus from an element
+ */
+export const blurElement = (selector: string): Chainable<any> => {
+  return cy.get(selector).blur();
+};
+
+/**
+ * Press a specific key on an element
+ */
+export const pressKey = (selector: string, key: string): Chainable<any> => {
+  return cy.get(selector).type(`{${key}}`);
+};
+
+/**
+ * Press a sequence of keys on an element
+ */
+export const pressKeySequence = (selector: string, keys: string[]): Chainable<any> => {
+  return cy.get(selector).then(($el) => {
+    keys.forEach(key => cy.wrap($el).type(`{${key}}`));
+  });
+};
+
+/**
+ * Select all text in an element
+ */
+export const selectAllText = (selector: string): Chainable<any> => {
+  return cy.get(selector).type('{selectall}');
+};
+
+/**
+ * Select text range in an element
+ */
+export const selectTextRange = (selector: string, start: number, end: number): Chainable<any> => {
+  return cy.get(selector).then(($el) => {
+    const element = $el[0] as HTMLInputElement;
+    element.setSelectionRange(start, end);
+  });
+};
+
+/**
+ * Copy text to clipboard (Ctrl+C)
+ */
+export const copyToClipboard = (selector: string): Chainable<any> => {
+  return cy.get(selector).type('{ctrl}c');
+};
+
+/**
+ * Paste from clipboard (Ctrl+V)
+ */
+export const pasteFromClipboard = (selector: string): Chainable<any> => {
+  return cy.get(selector).type('{ctrl}v');
+};
+
+/**
+ * Undo last action (Ctrl+Z)
+ */
+export const undoAction = (selector: string): Chainable<any> => {
+  return cy.get(selector).type('{ctrl}z');
+};
+
+/**
+ * Redo last action (Ctrl+Y)
+ */
+export const redoAction = (selector: string): Chainable<any> => {
+  return cy.get(selector).type('{ctrl}y');
+};
+
+/**
+ * Toggle element state (checkbox, radio, etc.)
+ */
+export const toggleElement = (selector: string): Chainable<any> => {
+  return cy.get(selector).click();
+};
+
+/**
+ * Check if element is enabled
+ */
+export const isEnabled = (selector: string): Chainable<any> => {
+  return cy.get(selector).should('be.enabled');
+};
+
+/**
+ * Check if element is disabled
+ */
+export const isDisabled = (selector: string): Chainable<any> => {
+  return cy.get(selector).should('be.disabled');
+};
+
+/**
+ * Check if element is required
+ */
+export const isRequired = (selector: string): Chainable<any> => {
+  return cy.get(selector).should('have.attr', 'required');
+};
+
+/**
+ * Check if element has specific attribute
+ */
+export const hasAttribute = (selector: string, attribute: string, value?: string): Chainable<any> => {
+  if (value) {
+    return cy.get(selector).should('have.attr', attribute, value);
+  }
+  return cy.get(selector).should('have.attr', attribute);
+};
+
+/**
+ * Check if element has specific class
+ */
+export const hasClass = (selector: string, className: string): Chainable<any> => {
+  return cy.get(selector).should('have.class', className);
+};
+
+/**
+ * Check if element has specific CSS property
+ */
+export const hasCSSProperty = (selector: string, property: string, value: string): Chainable<any> => {
+  return cy.get(selector).should('have.css', property, value);
+};
+
+/**
+ * Wait for element to have specific text
+ */
+export const waitForText = (selector: string, text: string, timeout = 10000): Chainable<any> => {
+  return cy.get(selector, { timeout }).should('contain.text', text);
+};
+
+/**
+ * Wait for element to not have specific text
+ */
+export const waitForNoText = (selector: string, text: string, timeout = 10000): Chainable<any> => {
+  return cy.get(selector, { timeout }).should('not.contain.text', text);
+};
+
+/**
+ * Wait for element count to match
+ */
+export const waitForElementCount = (selector: string, count: number, timeout = 10000): Chainable<any> => {
+  return cy.get(selector, { timeout }).should('have.length', count);
+};
+
+/**
+ * Wait for element to be empty
+ */
+export const waitForEmpty = (selector: string, timeout = 10000): Chainable<any> => {
+  return cy.get(selector, { timeout }).should('be.empty');
+};
+
+/**
+ * Wait for element to not be empty
+ */
+export const waitForNotEmpty = (selector: string, timeout = 10000): Chainable<any> => {
+  return cy.get(selector, { timeout }).should('not.be.empty');
 }; 

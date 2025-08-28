@@ -60,6 +60,29 @@ declare global {
       hoverOver: (selector: string) => Chainable<any>;
       rightClick: (selector: string) => Chainable<any>;
       doubleClick: (selector: string) => Chainable<any>;
+      // New enhanced UI commands
+      focusElement: (selector: string) => Chainable<any>;
+      blurElement: (selector: string) => Chainable<any>;
+      pressKey: (selector: string, key: string) => Chainable<any>;
+      pressKeySequence: (selector: string, keys: string[]) => Chainable<any>;
+      selectAllText: (selector: string) => Chainable<any>;
+      selectTextRange: (selector: string, start: number, end: number) => Chainable<any>;
+      copyToClipboard: (selector: string) => Chainable<any>;
+      pasteFromClipboard: (selector: string) => Chainable<any>;
+      undoAction: (selector: string) => Chainable<any>;
+      redoAction: (selector: string) => Chainable<any>;
+      toggleElement: (selector: string) => Chainable<any>;
+      isEnabled: (selector: string) => Chainable<any>;
+      isDisabled: (selector: string) => Chainable<any>;
+      isRequired: (selector: string) => Chainable<any>;
+      hasAttribute: (selector: string, attribute: string, value?: string) => Chainable<any>;
+      hasClass: (selector: string, className: string) => Chainable<any>;
+      hasCSSProperty: (selector: string, property: string, value: string) => Chainable<any>;
+      waitForText: (selector: string, text: string, timeout?: number) => Chainable<any>;
+      waitForNoText: (selector: string, text: string, timeout?: number) => Chainable<any>;
+      waitForElementCount: (selector: string, count: number, timeout?: number) => Chainable<any>;
+      waitForEmpty: (selector: string, timeout?: number) => Chainable<any>;
+      waitForNotEmpty: (selector: string, timeout?: number) => Chainable<any>;
       
       // Enhanced request commands
       getData: (url: string, options?: any) => Chainable<any>;
@@ -157,6 +180,30 @@ export const extendCypressCommands = (): void => {
   Cypress.Commands.add('hoverOver', utils.hoverOver);
   Cypress.Commands.add('rightClick', utils.rightClick);
   Cypress.Commands.add('doubleClick', utils.doubleClick);
+  
+  // New enhanced UI commands
+  Cypress.Commands.add('focusElement', utils.focusElement);
+  Cypress.Commands.add('blurElement', utils.blurElement);
+  Cypress.Commands.add('pressKey', utils.pressKey);
+  Cypress.Commands.add('pressKeySequence', utils.pressKeySequence);
+  Cypress.Commands.add('selectAllText', utils.selectAllText);
+  Cypress.Commands.add('selectTextRange', utils.selectTextRange);
+  Cypress.Commands.add('copyToClipboard', utils.copyToClipboard);
+  Cypress.Commands.add('pasteFromClipboard', utils.pasteFromClipboard);
+  Cypress.Commands.add('undoAction', utils.undoAction);
+  Cypress.Commands.add('redoAction', utils.redoAction);
+  Cypress.Commands.add('toggleElement', utils.toggleElement);
+  Cypress.Commands.add('isEnabled', utils.isEnabled);
+  Cypress.Commands.add('isDisabled', utils.isDisabled);
+  Cypress.Commands.add('isRequired', utils.isRequired);
+  Cypress.Commands.add('hasAttribute', utils.hasAttribute);
+  Cypress.Commands.add('hasClass', utils.hasClass);
+  Cypress.Commands.add('hasCSSProperty', utils.hasCSSProperty);
+  Cypress.Commands.add('waitForText', utils.waitForText);
+  Cypress.Commands.add('waitForNoText', utils.waitForNoText);
+  Cypress.Commands.add('waitForElementCount', utils.waitForElementCount);
+  Cypress.Commands.add('waitForEmpty', utils.waitForEmpty);
+  Cypress.Commands.add('waitForNotEmpty', utils.waitForNotEmpty);
   
   // Enhanced request commands
   Cypress.Commands.add('getData', utils.getData);
