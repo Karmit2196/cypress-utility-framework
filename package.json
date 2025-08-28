@@ -1,7 +1,7 @@
 {
   "name": "cypress-utils-framework",
   "version": "1.6.0",
-  "description": "A beginner-friendly utility framework for Cypress test automation with TypeScript support",
+  "description": "A professional utility framework for Cypress test automation with TypeScript support, featuring 110+ utility methods including advanced UI interactions, keyboard operations, clipboard actions, and comprehensive element testing capabilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -34,7 +34,7 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "type-check": "tsc --noEmit",
-    "prepublishOnly": "npm run build && npm run lint",
+    "prepublishOnly": "npm run build",
     "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags"
   },

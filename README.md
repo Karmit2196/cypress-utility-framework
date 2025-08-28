@@ -22,6 +22,15 @@ A beginner-friendly utility framework for Cypress test automation with TypeScrip
 - 🖱️ **Mouse Actions**: Right-click, double-click, hover, slow typing, clear and type
 - ⏱️ **Smart Waiting**: Wait for elements, loading, page readiness
 
+### 🚀 **Advanced UI Utilities (v1.6.0)**
+
+- ⌨️ **Keyboard Operations**: Focus, blur, key presses, key sequences
+- 📋 **Clipboard Operations**: Copy, paste, undo, redo actions
+- 🎯 **Text Selection**: Select all text, text range selection
+- 🔍 **Element State Validation**: Enabled/disabled, required, attributes, classes, CSS properties
+- ⏱️ **Smart Waiting**: Wait for text, element count, empty/not empty states
+- 🎨 **Professional Testing**: 25+ new UI utility methods for comprehensive element testing
+
 ## Installation
 
 ```bash
@@ -117,6 +126,43 @@ cy.uploadFile('#file-input', 'cypress/fixtures/test-file.txt');
 
 // Wait for element to be ready
 cy.waitForReady('.submit-button');
+```
+
+### 🚀 **Advanced UI Utilities (v1.6.0)**
+
+```typescript
+// Focus and blur operations
+cy.focusElement('#username');
+cy.blurElement('#username');
+
+// Keyboard operations
+cy.pressKey('#search', 'enter');
+cy.pressKeySequence('#input', ['ctrl', 'a', 'delete']);
+
+// Text selection
+cy.selectAllText('#textarea');
+cy.selectTextRange('#input', 0, 5);
+
+// Clipboard operations
+cy.copyToClipboard('#source');
+cy.pasteFromClipboard('#target');
+cy.undoAction('#editor');
+cy.redoAction('#editor');
+
+// Element state validation
+cy.isEnabled('#submit-button');
+cy.isDisabled('#loading-button');
+cy.isRequired('#email-field');
+cy.hasAttribute('#input', 'data-testid');
+cy.hasClass('.button', 'primary');
+cy.hasCSSProperty('.element', 'color', 'rgb(255, 0, 0)');
+
+// Smart waiting utilities
+cy.waitForText('.status', 'Success');
+cy.waitForNoText('.error', 'Failed');
+cy.waitForElementCount('.item', 5);
+cy.waitForEmpty('.list');
+cy.waitForNotEmpty('.results');
 ```
 
 ### 🔄 Enhanced Request Handling
