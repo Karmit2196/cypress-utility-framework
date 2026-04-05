@@ -1,123 +1,227 @@
-import { Chainable } from 'cypress';
+import type { UserData, AddressData, ProductData, OrderData } from '../types';
 import * as utils from '../utils';
 
 declare global {
   namespace Cypress {
     interface Chainable {
       // Navigation commands
-      visitAndWait: (url: string, waitForSelector?: string) => Chainable<any>;
-      visitAndWaitForIdle: (url: string, timeout?: number) => Chainable<any>;
-      reload: () => Chainable<any>;
-      goBack: () => Chainable<any>;
-      goForward: () => Chainable<any>;
-      
+      visitAndWait: (url: string, waitForSelector?: string) => Chainable<JQuery<HTMLElement>>;
+      visitAndWaitForIdle: (url: string, timeout?: number) => Chainable<null>;
+      reloadPage: () => Chainable<AUTWindow>;
+      goBack: () => Chainable<AUTWindow>;
+      goForward: () => Chainable<AUTWindow>;
+
       // Request commands
-      getRequest: (url: string, options?: any) => Chainable<any>;
-      postRequest: (url: string, body?: any, options?: any) => Chainable<any>;
-      putRequest: (url: string, body?: any, options?: any) => Chainable<any>;
-      deleteRequest: (url: string, options?: any) => Chainable<any>;
-      patchRequest: (url: string, body?: any, options?: any) => Chainable<any>;
-      
+      getRequest: <T = unknown>(
+        url: string,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      postRequest: <T = unknown>(
+        url: string,
+        body?: unknown,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      putRequest: <T = unknown>(
+        url: string,
+        body?: unknown,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      deleteRequest: <T = unknown>(
+        url: string,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      patchRequest: <T = unknown>(
+        url: string,
+        body?: unknown,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+
       // Element commands
-      waitForElement: (selector: string, timeout?: number) => Chainable<any>;
-      waitForElementExist: (selector: string, timeout?: number) => Chainable<any>;
-      assertText: (selector: string, expectedText: string) => Chainable<any>;
-      assertElementVisible: (selector: string) => Chainable<any>;
-      assertElementNotVisible: (selector: string) => Chainable<any>;
-      clickAndWait: (selector: string, waitFor?: string) => Chainable<any>;
-      fillForm: (formData: Record<string, string>) => Chainable<any>;
-      scrollToElement: (selector: string) => Chainable<any>;
-      takeScreenshot: (name?: string) => Chainable<any>;
-      
+      waitForElement: (selector: string, timeout?: number) => Chainable<JQuery<HTMLElement>>;
+      waitForElementExist: (selector: string, timeout?: number) => Chainable<JQuery<HTMLElement>>;
+      assertText: (selector: string, expectedText: string) => Chainable<JQuery<HTMLElement>>;
+      assertElementVisible: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      assertElementNotVisible: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      clickAndWait: (selector: string, waitFor?: string) => Chainable<JQuery<HTMLElement>>;
+      fillForm: (formData: Record<string, string>) => Chainable<null>;
+      scrollToElement: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      takeScreenshot: (name?: string) => Chainable<null>;
+
       // Network commands
-      waitForNetworkIdle: (timeout?: number) => Chainable<any>;
-      waitForNetworkRequest: (method: string, url: string, timeout?: number) => Chainable<any>;
-      interceptNetworkRequest: (method: string, url: string, response: any) => Chainable<any>;
-      
-      // Test data commands
-      generateTestData: (template: any, count?: number) => any[];
-      generateUserData: (count?: number) => any;
-      generateAddressData: (count?: number) => any;
-      
+      waitForNetworkIdle: (timeout?: number) => Chainable<null>;
+      waitForNetworkRequest: (method: string, url: string, timeout?: number) => Chainable<unknown>;
+      interceptNetworkRequest: (method: string, url: string, response: unknown) => Chainable<null>;
+
+      // Storage commands
+      setLocalStorage: (key: string, value: string) => Chainable<null>;
+      getLocalStorage: (key: string) => Chainable<string | null>;
+      removeLocalStorage: (key: string) => Chainable<null>;
+      hasLocalStorageKey: (key: string) => Chainable<boolean>;
+      getLocalStorageKeys: () => Chainable<string[]>;
+      getLocalStorageSize: () => Chainable<number>;
+      setMultipleLocalStorage: (data: Record<string, string>) => Chainable<null>;
+      clearSessionStorage: () => Chainable<null>;
+      setSessionStorage: (key: string, value: string) => Chainable<null>;
+      getSessionStorage: (key: string) => Chainable<string | null>;
+      removeSessionStorage: (key: string) => Chainable<null>;
+      hasSessionStorageKey: (key: string) => Chainable<boolean>;
+
       // Enhanced UI commands
-      dragTo: (fromSelector: string, toSelector: string) => Chainable<any>;
-      scrollTo: (selector: string) => Chainable<any>;
-      clickAll: (selectors: string[]) => Chainable<any>;
-      uploadFile: (selector: string, filePath: string) => Chainable<any>;
-      waitForReady: (selector: string, timeout?: number) => Chainable<any>;
-      fillFormData: (formData: Record<string, string>) => Chainable<any>;
-      waitForLoading: (spinnerSelector?: string) => Chainable<any>;
-      containsText: (selector: string, text: string) => Chainable<any>;
-      isVisible: (selector: string) => Chainable<any>;
-      isHidden: (selector: string) => Chainable<any>;
-      clickAndWaitFor: (clickSelector: string, waitForSelector: string, timeout?: number) => Chainable<any>;
-      waitForPageReady: (timeout?: number) => Chainable<any>;
-      isChecked: (selector: string) => Chainable<any>;
-      isUnchecked: (selector: string) => Chainable<any>;
-      selectOption: (selector: string, value: string) => Chainable<any>;
-      typeSlowly: (selector: string, text: string, delay?: number) => Chainable<any>;
-      clearAndType: (selector: string, text: string) => Chainable<any>;
-      hoverOver: (selector: string) => Chainable<any>;
-      rightClick: (selector: string) => Chainable<any>;
-      doubleClick: (selector: string) => Chainable<any>;
-      // New enhanced UI commands
-      focusElement: (selector: string) => Chainable<any>;
-      blurElement: (selector: string) => Chainable<any>;
-      pressKey: (selector: string, key: string) => Chainable<any>;
-      pressKeySequence: (selector: string, keys: string[]) => Chainable<any>;
-      selectAllText: (selector: string) => Chainable<any>;
-      selectTextRange: (selector: string, start: number, end: number) => Chainable<any>;
-      copyToClipboard: (selector: string) => Chainable<any>;
-      pasteFromClipboard: (selector: string) => Chainable<any>;
-      undoAction: (selector: string) => Chainable<any>;
-      redoAction: (selector: string) => Chainable<any>;
-      toggleElement: (selector: string) => Chainable<any>;
-      isEnabled: (selector: string) => Chainable<any>;
-      isDisabled: (selector: string) => Chainable<any>;
-      isRequired: (selector: string) => Chainable<any>;
-      hasAttribute: (selector: string, attribute: string, value?: string) => Chainable<any>;
-      hasClass: (selector: string, className: string) => Chainable<any>;
-      hasCSSProperty: (selector: string, property: string, value: string) => Chainable<any>;
-      waitForText: (selector: string, text: string, timeout?: number) => Chainable<any>;
-      waitForNoText: (selector: string, text: string, timeout?: number) => Chainable<any>;
-      waitForElementCount: (selector: string, count: number, timeout?: number) => Chainable<any>;
-      waitForEmpty: (selector: string, timeout?: number) => Chainable<any>;
-      waitForNotEmpty: (selector: string, timeout?: number) => Chainable<any>;
-      
-      // Enhanced request commands
-      getData: (url: string, options?: any) => Chainable<any>;
-      postData: (url: string, data: any, options?: any) => Chainable<any>;
-      updateData: (url: string, data: any, options?: any) => Chainable<any>;
-      deleteData: (url: string, options?: any) => Chainable<any>;
-      makeRequest: (method: string, url: string, data?: any, options?: any) => Chainable<any>;
-      waitForRequestToFinish: (method: string, url: string, timeout?: number) => Chainable<any>;
-      mockRequest: (method: string, url: string, response: any) => Chainable<any>;
-      hasStatus: (response: any, status: number) => Chainable<any>;
-      containsData: (response: any, key: string, value: any) => Chainable<any>;
-      isArray: (response: any) => Chainable<any>;
-      isObject: (response: any) => Chainable<any>;
-      getResponseData: (response: any, key?: string) => Chainable<any>;
-      requestWithHeaders: (method: string, url: string, data?: any, headers?: Record<string, string>) => Chainable<any>;
-      requestWithToken: (method: string, url: string, token: string, data?: any) => Chainable<any>;
-      requestAndWait: (method: string, url: string, data?: any, options?: any) => Chainable<any>;
-      hasFailed: (response: any) => Chainable<any>;
-      hasSucceeded: (response: any) => Chainable<any>;
-      
-      // Enhanced test data commands
-      createTestData: (template: any, count?: number) => any[];
+      dragTo: (fromSelector: string, toSelector: string) => Chainable<JQuery<HTMLElement>>;
+      clickAll: (selectors: string[]) => Chainable<null>;
+      uploadFile: (selector: string, filePath: string) => Chainable<JQuery<HTMLElement>>;
+      waitForReady: (selector: string, timeout?: number) => Chainable<JQuery<HTMLElement>>;
+      fillFormData: (formData: Record<string, string>) => Chainable<null>;
+      waitForLoading: (spinnerSelector?: string) => Chainable<JQuery<HTMLElement>>;
+      containsText: (selector: string, text: string) => Chainable<JQuery<HTMLElement>>;
+      isVisible: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      isHidden: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      clickAndWaitFor: (
+        clickSelector: string,
+        waitForSelector: string,
+        timeout?: number
+      ) => Chainable<JQuery<HTMLElement>>;
+      waitForPageReady: (timeout?: number) => Chainable<null>;
+      isChecked: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      isUnchecked: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      selectOption: (selector: string, value: string) => Chainable<JQuery<HTMLElement>>;
+      typeSlowly: (
+        selector: string,
+        text: string,
+        delay?: number
+      ) => Chainable<JQuery<HTMLElement>>;
+      clearAndType: (selector: string, text: string) => Chainable<JQuery<HTMLElement>>;
+      hoverOver: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      rightClick: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      doubleClick: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      focusElement: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      blurElement: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      pressKey: (selector: string, key: string) => Chainable<JQuery<HTMLElement>>;
+      pressKeySequence: (selector: string, keys: string[]) => Chainable<JQuery<HTMLElement>>;
+      selectAllText: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      selectTextRange: (
+        selector: string,
+        start: number,
+        end: number
+      ) => Chainable<JQuery<HTMLElement>>;
+      copyToClipboard: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      pasteFromClipboard: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      undoAction: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      redoAction: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      toggleElement: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      isEnabled: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      isDisabled: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      isRequired: (selector: string) => Chainable<JQuery<HTMLElement>>;
+      hasAttribute: (
+        selector: string,
+        attribute: string,
+        value?: string
+      ) => Chainable<JQuery<HTMLElement>>;
+      hasClass: (selector: string, className: string) => Chainable<JQuery<HTMLElement>>;
+      hasCSSProperty: (
+        selector: string,
+        property: string,
+        value: string
+      ) => Chainable<JQuery<HTMLElement>>;
+      waitForText: (
+        selector: string,
+        text: string,
+        timeout?: number
+      ) => Chainable<JQuery<HTMLElement>>;
+      waitForNoText: (
+        selector: string,
+        text: string,
+        timeout?: number
+      ) => Chainable<JQuery<HTMLElement>>;
+      waitForElementCount: (
+        selector: string,
+        count: number,
+        timeout?: number
+      ) => Chainable<JQuery<HTMLElement>>;
+      waitForEmpty: (selector: string, timeout?: number) => Chainable<JQuery<HTMLElement>>;
+      waitForNotEmpty: (selector: string, timeout?: number) => Chainable<JQuery<HTMLElement>>;
+
+      // Enhanced request commands (aliases)
+      getData: <T = unknown>(
+        url: string,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      postData: <T = unknown>(
+        url: string,
+        body?: unknown,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      updateData: <T = unknown>(
+        url: string,
+        body?: unknown,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      deleteData: <T = unknown>(
+        url: string,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      makeRequest: <T = unknown>(
+        method: string,
+        url: string,
+        body?: unknown,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      waitForRequestToFinish: (method: string, url: string, timeout?: number) => Chainable<unknown>;
+      mockRequest: (method: string, url: string, response: unknown) => Chainable<null>;
+      hasStatus: (response: Response<unknown>, status: number) => Chainable<Response<unknown>>;
+      containsData: (
+        response: Response<Record<string, unknown>>,
+        key: string,
+        value: unknown
+      ) => Chainable<Response<Record<string, unknown>>>;
+      isArray: (response: Response<unknown>) => Chainable<Response<unknown>>;
+      isObject: (response: Response<unknown>) => Chainable<Response<unknown>>;
+      getResponseData: (
+        response: Response<Record<string, unknown>>,
+        key?: string
+      ) => Chainable<unknown>;
+      requestWithHeaders: <T = unknown>(
+        method: string,
+        url: string,
+        data?: unknown,
+        headers?: Record<string, string>
+      ) => Chainable<Response<T>>;
+      requestWithToken: <T = unknown>(
+        method: string,
+        url: string,
+        token: string,
+        data?: unknown
+      ) => Chainable<Response<T>>;
+      requestAndWait: <T = unknown>(
+        method: string,
+        url: string,
+        data?: unknown,
+        options?: Partial<Cypress.RequestOptions>
+      ) => Chainable<Response<T>>;
+      hasFailed: (response: Response<unknown>) => Chainable<Response<unknown>>;
+      hasSucceeded: (response: Response<unknown>) => Chainable<Response<unknown>>;
+
+      // Test data commands
+      createTestData: (
+        template: Record<string, unknown>,
+        count?: number
+      ) => Record<string, unknown> | Record<string, unknown>[];
       createRandomEmail: () => string;
       createRandomString: (length?: number) => string;
       createRandomPhone: () => string;
       createRandomDate: (startYear?: number, endYear?: number) => Date;
-      createUserData: (count?: number) => any;
-      createAddressData: (count?: number) => any;
-      createProductData: (count?: number) => any;
-      createOrderData: (count?: number) => any;
+      createUserData: (count?: number) => UserData | UserData[];
+      createAddressData: (count?: number) => AddressData | AddressData[];
+      createProductData: (count?: number) => ProductData | ProductData[];
+      createOrderData: (count?: number) => OrderData | OrderData[];
       createRandomNumbers: (count: number, min?: number, max?: number) => number[];
       createRandomColor: () => string;
       createRandomBoolean: () => boolean;
-      createDataWithValues: (values: any) => any;
-      createDataWithOverrides: (baseTemplate: any, overrides: any) => boolean;
+      createDataWithValues: (values: Record<string, unknown>) => Record<string, unknown>;
+      createDataWithOverrides: (
+        baseTemplate: Record<string, unknown>,
+        overrides: Record<string, unknown>
+      ) => Record<string, unknown>;
     }
   }
 }
@@ -127,17 +231,17 @@ export const extendCypressCommands = (): void => {
   // Navigation commands
   Cypress.Commands.add('visitAndWait', utils.visitAndWait);
   Cypress.Commands.add('visitAndWaitForIdle', utils.visitAndWaitForIdle);
-  Cypress.Commands.add('reload', utils.reload);
+  Cypress.Commands.add('reloadPage', utils.reload);
   Cypress.Commands.add('goBack', utils.goBack);
   Cypress.Commands.add('goForward', utils.goForward);
-  
+
   // Request commands
   Cypress.Commands.add('getRequest', utils.getRequest);
   Cypress.Commands.add('postRequest', utils.postRequest);
   Cypress.Commands.add('putRequest', utils.putRequest);
   Cypress.Commands.add('deleteRequest', utils.deleteRequest);
   Cypress.Commands.add('patchRequest', utils.patchRequest);
-  
+
   // Element commands
   Cypress.Commands.add('waitForElement', utils.waitForElement);
   Cypress.Commands.add('waitForElementExist', utils.waitForElementExist);
@@ -148,21 +252,15 @@ export const extendCypressCommands = (): void => {
   Cypress.Commands.add('fillForm', utils.fillForm);
   Cypress.Commands.add('scrollToElement', utils.scrollToElement);
   Cypress.Commands.add('takeScreenshot', utils.takeScreenshot);
-  
+
   // Network commands
   Cypress.Commands.add('waitForNetworkIdle', utils.waitForNetworkIdle);
   Cypress.Commands.add('waitForNetworkRequest', utils.waitForNetworkRequest);
   Cypress.Commands.add('interceptNetworkRequest', utils.interceptNetworkRequest);
-  
-  // Test data commands
-  Cypress.Commands.add('generateTestData', utils.generateTestData);
-  Cypress.Commands.add('generateUserData', utils.generateUserData);
-  Cypress.Commands.add('generateAddressData', utils.generateAddressData);
-  
+
   // Enhanced UI commands
   Cypress.Commands.add('dragTo', utils.dragTo);
-  Cypress.Commands.add('scrollTo', utils.scrollTo);
-  Cypress.Commands.add('clickAll', utils.clickAll);
+  Cypress.Commands.add('scrollToElement', utils.scrollTo);
   Cypress.Commands.add('uploadFile', utils.uploadFile);
   Cypress.Commands.add('waitForReady', utils.waitForReady);
   Cypress.Commands.add('fillFormData', utils.fillFormData);
@@ -180,8 +278,6 @@ export const extendCypressCommands = (): void => {
   Cypress.Commands.add('hoverOver', utils.hoverOver);
   Cypress.Commands.add('rightClick', utils.rightClick);
   Cypress.Commands.add('doubleClick', utils.doubleClick);
-  
-  // New enhanced UI commands
   Cypress.Commands.add('focusElement', utils.focusElement);
   Cypress.Commands.add('blurElement', utils.blurElement);
   Cypress.Commands.add('pressKey', utils.pressKey);
@@ -204,7 +300,7 @@ export const extendCypressCommands = (): void => {
   Cypress.Commands.add('waitForElementCount', utils.waitForElementCount);
   Cypress.Commands.add('waitForEmpty', utils.waitForEmpty);
   Cypress.Commands.add('waitForNotEmpty', utils.waitForNotEmpty);
-  
+
   // Enhanced request commands
   Cypress.Commands.add('getData', utils.getData);
   Cypress.Commands.add('postData', utils.postData);
@@ -223,8 +319,8 @@ export const extendCypressCommands = (): void => {
   Cypress.Commands.add('requestAndWait', utils.requestAndWait);
   Cypress.Commands.add('hasFailed', utils.hasFailed);
   Cypress.Commands.add('hasSucceeded', utils.hasSucceeded);
-  
-  // Enhanced test data commands
+
+  // Test data commands
   Cypress.Commands.add('createTestData', utils.createTestData);
   Cypress.Commands.add('createRandomEmail', utils.createRandomEmail);
   Cypress.Commands.add('createRandomString', utils.createRandomString);
@@ -239,4 +335,18 @@ export const extendCypressCommands = (): void => {
   Cypress.Commands.add('createRandomBoolean', utils.createRandomBoolean);
   Cypress.Commands.add('createDataWithValues', utils.createDataWithValues);
   Cypress.Commands.add('createDataWithOverrides', utils.createDataWithOverrides);
-}; 
+
+  // Storage commands
+  Cypress.Commands.add('setLocalStorage', utils.setLocalStorage);
+  Cypress.Commands.add('getLocalStorage', utils.getLocalStorage);
+  Cypress.Commands.add('removeLocalStorage', utils.removeLocalStorage);
+  Cypress.Commands.add('hasLocalStorageKey', utils.hasLocalStorageKey);
+  Cypress.Commands.add('getLocalStorageKeys', utils.getLocalStorageKeys);
+  Cypress.Commands.add('getLocalStorageSize', utils.getLocalStorageSize);
+  Cypress.Commands.add('setMultipleLocalStorage', utils.setMultipleLocalStorage);
+  Cypress.Commands.add('clearSessionStorage', utils.clearSessionStorage);
+  Cypress.Commands.add('setSessionStorage', utils.setSessionStorage);
+  Cypress.Commands.add('getSessionStorage', utils.getSessionStorage);
+  Cypress.Commands.add('removeSessionStorage', utils.removeSessionStorage);
+  Cypress.Commands.add('hasSessionStorageKey', utils.hasSessionStorageKey);
+};

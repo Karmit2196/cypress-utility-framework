@@ -1,4 +1,4 @@
-import { Chainable } from 'cypress';
+import { Chainable } from '../types';
 import { RequestOptions } from '../types';
 
 // ===== BASIC REQUEST UTILITIES =====
@@ -6,210 +6,223 @@ import { RequestOptions } from '../types';
 /**
  * GET request wrapper
  */
-export const getRequest = (url: string, options?: RequestOptions): Chainable<any> => {
-  return cy.request('GET', url, options);
+export const getRequest = <T = unknown>(
+  url: string,
+  options?: RequestOptions
+): Chainable<Cypress.Response<T>> => {
+  return cy.request<T>({ method: 'GET', url, ...options });
 };
 
 /**
  * POST request wrapper
  */
-export const postRequest = (url: string, body?: any, options?: RequestOptions): Chainable<any> => {
-  return cy.request('POST', url, body, options);
+export const postRequest = <T = unknown>(
+  url: string,
+  body?: unknown,
+  options?: RequestOptions
+): Chainable<Cypress.Response<T>> => {
+  return cy.request<T>({ method: 'POST', url, body: body as string | object, ...options });
 };
 
 /**
  * PUT request wrapper
  */
-export const putRequest = (url: string, body?: any, options?: RequestOptions): Chainable<any> => {
-  return cy.request('PUT', url, body, options);
+export const putRequest = <T = unknown>(
+  url: string,
+  body?: unknown,
+  options?: RequestOptions
+): Chainable<Cypress.Response<T>> => {
+  return cy.request<T>({ method: 'PUT', url, body: body as string | object, ...options });
 };
 
 /**
  * DELETE request wrapper
  */
-export const deleteRequest = (url: string, options?: RequestOptions): Chainable<any> => {
-  return cy.request('DELETE', url, options);
+export const deleteRequest = <T = unknown>(
+  url: string,
+  options?: RequestOptions
+): Chainable<Cypress.Response<T>> => {
+  return cy.request<T>({ method: 'DELETE', url, ...options });
 };
 
 /**
  * PATCH request wrapper
  */
-export const patchRequest = (url: string, body?: any, options?: RequestOptions): Chainable<any> => {
-  return cy.request('PATCH', url, body, options);
+export const patchRequest = <T = unknown>(
+  url: string,
+  body?: unknown,
+  options?: RequestOptions
+): Chainable<Cypress.Response<T>> => {
+  return cy.request<T>({ method: 'PATCH', url, body: body as string | object, ...options });
 };
 
 /**
  * Request with custom method
  */
-export const request = (method: string, url: string, body?: any, options?: RequestOptions): Chainable<any> => {
-  return cy.request(method, url, body, options);
+export const request = <T = unknown>(
+  method: string,
+  url: string,
+  body?: unknown,
+  options?: RequestOptions
+): Chainable<Cypress.Response<T>> => {
+  return cy.request<T>({ method, url, body: body as string | object, ...options });
 };
 
 /**
- * Wait for a specific request to complete
+ * Wait for a specific request to complete (must be intercepted and aliased beforehand)
  */
-export const waitForRequest = (method: string, url: string, timeout = 10000): Chainable<any> => {
-  return cy.wait(`@${method}:${url}`, { timeout });
+export const waitForRequest = (
+  method: string,
+  url: string,
+  timeout = 10000
+): Chainable<unknown> => {
+  return cy.wait(`@${method}:${url}`, { timeout }) as unknown as Chainable<unknown>;
 };
 
 /**
- * Intercept and mock a request
+ * Intercept and stub a request
  */
-export const interceptRequest = (method: string, url: string, response: any): Chainable<any> => {
-  return cy.intercept(method, url, response);
+export const interceptRequest = (
+  method: string,
+  url: string,
+  response: unknown
+): Chainable<null> => {
+  const intercept = cy.intercept as (m: string, u: string, r: unknown) => Chainable<null>;
+  intercept(method, url, response);
+  return cy.wrap(null);
 };
 
-// ===== ENHANCED REQUEST UTILITIES =====
+// ===== ENHANCED REQUEST UTILITIES (backwards-compatible aliases) =====
+
+/** @alias getRequest */
+export const getData = getRequest;
+/** @alias postRequest */
+export const postData = postRequest;
+/** @alias putRequest */
+export const updateData = putRequest;
+/** @alias deleteRequest */
+export const deleteData = deleteRequest;
+/** @alias request */
+export const makeRequest = request;
+/** @alias waitForRequest */
+export const waitForRequestToFinish = waitForRequest;
+/** @alias interceptRequest */
+export const mockRequest = interceptRequest;
 
 /**
- * Make a GET request
+ * Assert response has the expected HTTP status code
  */
-export const getData = (url: string, options?: any): Chainable<any> => {
-  return cy.request('GET', url, options);
-};
-
-/**
- * Make a POST request with data
- */
-export const postData = (url: string, data: any, options?: any): Chainable<any> => {
-  return cy.request('POST', url, data, options);
-};
-
-/**
- * Make a PUT request to update data
- */
-export const updateData = (url: string, data: any, options?: any): Chainable<any> => {
-  return cy.request('PUT', url, data, options);
-};
-
-/**
- * Make a DELETE request
- */
-export const deleteData = (url: string, options?: any): Chainable<any> => {
-  return cy.request('DELETE', url, options);
-};
-
-/**
- * Make a request with custom method
- */
-export const makeRequest = (method: string, url: string, data?: any, options?: any): Chainable<any> => {
-  return cy.request(method, url, data, options);
-};
-
-/**
- * Wait for a specific request to finish
- */
-export const waitForRequestToFinish = (method: string, url: string, timeout = 10000): Chainable<any> => {
-  return cy.wait(`@${method}:${url}`, { timeout });
-};
-
-/**
- * Mock a request response
- */
-export const mockRequest = (method: string, url: string, response: any): Chainable<any> => {
-  return cy.intercept(method, url, response);
-};
-
-/**
- * Check if response has correct status
- */
-export const hasStatus = (response: any, status: number): Chainable<any> => {
+export const hasStatus = (
+  response: Cypress.Response<unknown>,
+  status: number
+): Chainable<Cypress.Response<unknown>> => {
   expect(response.status).to.eq(status);
   return cy.wrap(response);
 };
 
 /**
- * Check if response contains specific data
+ * Assert response body contains a key with the given value
  */
-export const containsData = (response: any, key: string, value: any): Chainable<any> => {
+export const containsData = (
+  response: Cypress.Response<Record<string, unknown>>,
+  key: string,
+  value: unknown
+): Chainable<Cypress.Response<Record<string, unknown>>> => {
   expect(response.body[key]).to.eq(value);
   return cy.wrap(response);
 };
 
 /**
- * Check if response is an array
+ * Assert response body is an array
  */
-export const isArray = (response: any): Chainable<any> => {
+export const isArray = (
+  response: Cypress.Response<unknown>
+): Chainable<Cypress.Response<unknown>> => {
   expect(response.body).to.be.an('array');
   return cy.wrap(response);
 };
 
 /**
- * Check if response is an object
+ * Assert response body is an object
  */
-export const isObject = (response: any): Chainable<any> => {
+export const isObject = (
+  response: Cypress.Response<unknown>
+): Chainable<Cypress.Response<unknown>> => {
   expect(response.body).to.be.an('object');
   return cy.wrap(response);
 };
 
 /**
- * Get data from response body
+ * Extract a field from the response body (or the whole body if no key given)
  */
-export const getResponseData = (response: any, key?: string): Chainable<any> => {
+export const getResponseData = (
+  response: Cypress.Response<Record<string, unknown>>,
+  key?: string
+): Chainable<unknown> => {
   if (key) {
-    return cy.wrap(response.body[key]);
+    return cy.wrap(response.body[key]) as Chainable<unknown>;
   }
-  return cy.wrap(response.body);
+  return cy.wrap(response.body) as Chainable<unknown>;
 };
 
 /**
- * Make request with headers
+ * Make request with custom headers
  */
-export const requestWithHeaders = (
+export const requestWithHeaders = <T = unknown>(
   method: string,
   url: string,
-  data?: any,
+  data?: unknown,
   headers?: Record<string, string>
-): Chainable<any> => {
-  const options = headers ? { headers } : {};
-  return cy.request(method, url, data, options);
+): Chainable<Cypress.Response<T>> => {
+  const opts = headers ? { headers } : {};
+  return cy.request<T>({ method, url, body: data as string | object, ...opts });
 };
 
 /**
- * Make request with authorization token
+ * Make request with Bearer authorization token
  */
-export const requestWithToken = (
+export const requestWithToken = <T = unknown>(
   method: string,
   url: string,
   token: string,
-  data?: any
-): Chainable<any> => {
-  const options = {
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  };
-  return cy.request(method, url, data, options);
-};
-
-/**
- * Make request and wait for it to complete
- */
-export const requestAndWait = (
-  method: string,
-  url: string,
-  data?: any,
-  options?: any
-): Chainable<any> => {
-  return cy.request(method, url, data, options).then((response) => {
-    // Wait a bit to ensure request is fully processed
-    cy.wait(500);
-    return response;
+  data?: unknown
+): Chainable<Cypress.Response<T>> => {
+  return cy.request<T>({
+    method,
+    url,
+    body: data as string | object,
+    headers: { Authorization: `Bearer ${token}` },
   });
 };
 
 /**
- * Check if request failed
+ * Make request and return its response (cy.request already resolves on completion)
  */
-export const hasFailed = (response: any): Chainable<any> => {
+export const requestAndWait = <T = unknown>(
+  method: string,
+  url: string,
+  data?: unknown,
+  options?: RequestOptions
+): Chainable<Cypress.Response<T>> => {
+  return cy.request<T>({ method, url, body: data as string | object, ...options });
+};
+
+/**
+ * Assert request failed (status > 399)
+ */
+export const hasFailed = (
+  response: Cypress.Response<unknown>
+): Chainable<Cypress.Response<unknown>> => {
   expect(response.status).to.be.greaterThan(399);
   return cy.wrap(response);
 };
 
 /**
- * Check if request succeeded
+ * Assert request succeeded (status < 400)
  */
-export const hasSucceeded = (response: any): Chainable<any> => {
+export const hasSucceeded = (
+  response: Cypress.Response<unknown>
+): Chainable<Cypress.Response<unknown>> => {
   expect(response.status).to.be.lessThan(400);
   return cy.wrap(response);
-}; 
+};

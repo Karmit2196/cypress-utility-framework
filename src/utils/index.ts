@@ -11,4 +11,6 @@ export * from './elements';
 export * from './testData';
 
 // Network utilities
-export * from './network'; 
+export * from './network';
+// Storage utilities
+export * from './storage';

@@ -16,4 +16,4 @@ const cypressUtils = {
   extendCypressCommands,
 };
 
-export default cypressUtils; 
+export default cypressUtils;

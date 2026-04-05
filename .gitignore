@@ -49,4 +49,7 @@ pids
 # Cypress
 cypress/videos/
 cypress/screenshots/
-cypress/downloads/ 
+cypress/downloads/
+
+# Personal / non-public docs
+INTERVIEW_QA.md
